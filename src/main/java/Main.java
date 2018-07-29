@@ -2,11 +2,12 @@ import dbs.WorldDB;
 import models.City;
 import models.Country;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         WorldDB db = new WorldDB();
 
         Scanner input = new Scanner(System.in);
@@ -38,5 +39,13 @@ public class Main {
             System.out.println("  " + country);
         }
         System.out.println();
+
+        System.out.println("Countries by their language: ");
+        List<Country> pl = db.getCountryByLanguage(lang);
+        for (Country country : pl) {
+            System.out.println(country.name);
+        }
+        System.out.println();
+    }
     }
 }

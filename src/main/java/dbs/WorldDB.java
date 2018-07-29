@@ -9,15 +9,26 @@ import java.util.List;
 import java.util.Properties;
 
 public class WorldDB {
-    private static final String GET_ALL_COUNTRIES = "SELECT * FROM country";
+
+    // spacing out for readability
+    private static final String GET_ALL_COUNTRIES =
+            "SELECT * FROM country";
+
     private static final String GET_COUNTRIES_UNDER_LIMIT =
             "SELECT * FROM country WHERE population < ?";
+
     private static final String GET_COUNTRIES_BETWEEN =
             "SELECT * FROM country WHERE population > ? AND population < ?";
+
     private static final String GET_CITIES_IN_COUNTRY =
             "SELECT * FROM city + " +
             "JOIN country ON city.countrycode = country.code " +
             "WHERE country.code = ?";
+
+    private static final String GET_LANGUAGE_BY_COUNTRY =
+            "SELECT country.name FROM country " +
+            "JOIN countrylanguage ON country.code = countrylanguage.countrycode " +
+            "WHERE countrylanguage.language = ? AND countrylanguage.isofficial = 'TRUE'";
 
     private Connection conn;
 
@@ -35,6 +46,27 @@ public class WorldDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Country> getCountryByLanguage(String lang) {
+        List<Country> places = new ArrayList<>();
+
+        try {
+            PreparedStatement sql = this.conn.prepareStatement(GET_LANGUAGE_BY_COUNTRY);
+            sql.setString(1, lang);
+
+            ResultSet results = sql.executeQuery();
+            while (results.next()) {
+                Country country = new Country();
+                country.name = results.getString("name");
+                places.add(country);
+                System.out.println(country.name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return places;
     }
 
     //Method to grab all the countries as a whole
@@ -107,9 +139,9 @@ public class WorldDB {
                 city.population = results.getInt("population");
                 cities.add(city);
             }
-        } catch(SQLException e){
+        } catch(SQLException e) {
             e.printStackTrace();
-
+        }
             return cities;
     }
 
@@ -131,10 +163,12 @@ public class WorldDB {
                 country.population = results.getInt("population");
                 countries.add(country);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-            return Country;
-        }
+        return countries;
+
     }
+
 }
