@@ -40,12 +40,14 @@ public class Main {
         }
         System.out.println();
 
-        System.out.println("Countries by their language: ");
-        List<Country> pl = db.getCountryByLanguage(lang);
-        for (Country country : pl) {
+        Scanner userInput = new Scanner(System.in);
+        System.out.print("Enter Language: ");
+        String lang = input.nextLine();
+
+        List<Country> place = db.getCountryByLanguage(lang);
+        for (Country country : place) {
             System.out.println(country.name);
         }
         System.out.println();
-    }
     }
 }
